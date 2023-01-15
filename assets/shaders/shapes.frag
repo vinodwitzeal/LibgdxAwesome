@@ -17,7 +17,7 @@ uniform vec4 u_startColor;
 uniform vec4 u_endColor;
 uniform float u_angle;
 uniform vec2 u_radialPosition;
-uniform float u_gradientRaidus;
+uniform float u_gradientRadius;
 
 float sdRoundBox(in vec2 p, in vec2 b, in vec4 r)
 {
@@ -57,8 +57,8 @@ void main()
             uv = vec2(cos(angle) * len, sin(angle) * len) + origin;
             col = mix(u_endColor, u_startColor, smoothstep(0.0, 1.0, uv.x));
         }else if(u_fillType==3){
-            vec2 uv =v_texCoords;
-            float distance = length(uv-vec2(0.5))*2.0;
+            float distance =dist(u_radialPosition,v_texCoords*u_dimension)/u_gradientRadius;
+//            distance=distance/u_gradientRadius;
             if(distance>1.0){
                 distance=1.0;
             }
@@ -67,7 +67,7 @@ void main()
             // float d = dist(iResolution.xy * 0.5, fragCoord.xy) * (sin(iTime) + 1.5) * 0.003;
 
 
-            col = mix(u_startColor, u_endColor, smoothstep(0.0, 1.0, distance));
+            col = mix(u_endColor, u_startColor, smoothstep(0.0, 1.0, distance));
         }else{
             col=v_color;
         }
