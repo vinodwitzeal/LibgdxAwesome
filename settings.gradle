@@ -1,0 +1,1 @@
+include 'lwjgl2', 'android', 'lwjgl3', 'ios', 'core'
