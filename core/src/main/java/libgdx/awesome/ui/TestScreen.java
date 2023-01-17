@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import libgdx.awesome.drawable.BoxDrawable;
 
@@ -15,17 +16,46 @@ public class TestScreen extends UIScreen{
 
     @Override
     protected void buildUI() {
-        BoxDrawable shapeDrawable=new BoxDrawable(new TextureRegion(new Texture("sdf_rect.png")))
+        Texture sdfTexture=new Texture("sdf_rect.png");
+        sdfTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        Table mainTable=new Table();
+        mainTable.setFillParent(true);
+
+
+
+        BoxDrawable solidDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
 //                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
 //                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
                 .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
                 .outline(4.0f)
-                .outlineColor(Color.valueOf("#FFFFFF"))
-                .radius(150,40,20,150);
-        Image image=new Image(shapeDrawable);
-        image.setSize(360,300);
-        image.setPosition((width-image.getWidth())/2f,(height-image.getHeight())/2f);
-        stage.addActor(image);
+                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .radius(20,40,20,20);
+
+        mainTable.add(new Image(solidDrawable)).width(100).height(100).padBottom(20).row();
+
+        BoxDrawable linearDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
+                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
+//                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
+//                .fillSolid(Color.valueOf("FFbb66"))
+//                .fillNone()
+                .outline(4.0f)
+                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .radius(30);
+
+        mainTable.add(new Image(linearDrawable)).width(100).height(100).padBottom(20).row();
+
+        BoxDrawable radialDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
+//                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
+                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(50,50),50)
+//                .fillSolid(Color.valueOf("FFbb66"))
+//                .fillNone()
+                .outline(4.0f)
+                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .radius(50);
+
+        mainTable.add(new Image(radialDrawable)).width(100).height(100).padBottom(20);
+
+        stage.addActor(mainTable);
     }
 }
