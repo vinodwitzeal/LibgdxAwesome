@@ -13,20 +13,24 @@ import libgdx.awesome.shaders.ShapeShader;
 
 public class BoxDrawable extends BaseDrawable {
     public static final int FILL_NONE=0,FILL_SOLID=1,FILL_LINEAR_GRADIENT=2,FILL_RADIAL_GRADIENT=3;
+    private float x,y,width,height;
     private TextureRegion region;
     private ShapeShader shapeShader;
     private ShaderProgram defaultShader;
-    private Vector2 dimension=new Vector2();
-    private float topLeft=0.0f,topRight=0.0f,bottomRight=0.0f,bottomLeft=0.0f;
+    private float radius[]=new float[]{0,0,0,0};
     private float outline=0.0f;
     private Color outlineColor=Color.valueOf("#00000000");
     private int fillType=FILL_SOLID;
-    private final Color tmpColor=new Color();
     private Color fillColor=Color.valueOf("#FFFFFF");
     private Color startColor=Color.valueOf("#00000000"),endColor=Color.valueOf("#00000000");
     private final Vector2 radialPosition=new Vector2();
     private float gradientRadius=0.0f;
     private float angle;
+
+    private float uRadius[]=new float[]{0,0,0,0};
+    private float uOutline;
+    private float uGradientRadius;
+    private Vector2 uRadialPosition=new Vector2();
     public BoxDrawable(TextureRegion region){
         this.region=region;
         ShaderProgram.pedantic=false;
@@ -41,10 +45,10 @@ public class BoxDrawable extends BaseDrawable {
     }
 
     public BoxDrawable radius(float topLeft,float topRight,float bottomRight,float bottomLeft){
-        this.topLeft=topLeft;
-        this.topRight=topRight;
-        this.bottomRight=bottomRight;
-        this.bottomLeft=bottomLeft;
+        radius[0]=bottomRight;
+        radius[1]=topRight;
+        radius[2]=bottomLeft;
+        radius[3]=topLeft;
         return this;
     }
 
@@ -89,10 +93,25 @@ public class BoxDrawable extends BaseDrawable {
         return this;
     }
 
+    private void validate(float x,float y,float width,float height){
+        if (this.x==x && this.y==y && this.width==width && this.height==height)return;
+        this.x=x;
+        this.y=y;
+        this.width=width;
+        this.height=height;
+        float maxDimension=Math.max(width,height);
+        for (int i=0;i<4;i++){
+            uRadius[i]=radius[i]/maxDimension;
+        }
+        uRadialPosition.set(radialPosition.x/maxDimension,(radialPosition.y)/maxDimension);
+        uOutline=outline/maxDimension;
+        uGradientRadius=gradientRadius/maxDimension;
+    }
+
 
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
-        dimension.set(width,height);
+        validate(x,y,width,height);
         applyShader(batch);
         batch.draw(region,x,y,width,height);
         removeShader(batch);
@@ -102,16 +121,15 @@ public class BoxDrawable extends BaseDrawable {
         batch.flush();
         defaultShader=batch.getShader();
         batch.setShader(shapeShader);
-        shapeShader.setDimension(dimension);
-        shapeShader.setRadius(topLeft,topRight,bottomRight,bottomLeft);
+        shapeShader.setRadius(uRadius);
         shapeShader.setFillColor(fillColor);
-        shapeShader.setOutline(outline);
+        shapeShader.setOutline(uOutline);
         shapeShader.setOutlineColor(outlineColor);
         shapeShader.setFillType(fillType);
         shapeShader.setGradient(startColor,endColor);
         shapeShader.setGradientAngle(angle);
-        shapeShader.setRadialPosition(radialPosition);
-        shapeShader.setGradientRadius(gradientRadius);
+        shapeShader.setRadialPosition(uRadialPosition);
+        shapeShader.setGradientRadius(uGradientRadius);
     }
 
     private void removeShader(Batch batch){

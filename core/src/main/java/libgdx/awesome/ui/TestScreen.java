@@ -39,22 +39,22 @@ public class TestScreen extends UIScreen{
 //                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
 //                .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
-                .outline(4.0f)
+                .outline(40.0f)
                 .outlineColor(Color.valueOf("#FFFFFFBB"))
-                .radius(30);
+                .radius(40);
 
-        mainTable.add(new Image(linearDrawable)).width(100).height(100).padBottom(20).row();
+        mainTable.add(new Image(linearDrawable)).width(800).height(800).padBottom(20).row();
 
         BoxDrawable radialDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
 //                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
-                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(50,50),50)
+                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(400,400),600)
 //                .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
-                .outline(4.0f)
+                .outline(20.0f)
                 .outlineColor(Color.valueOf("#FFFFFFBB"))
-                .radius(50);
+                .radius(400);
 
-        mainTable.add(new Image(radialDrawable)).width(100).height(100).padBottom(20);
+        mainTable.add(new Image(radialDrawable)).width(800).height(800).padBottom(20);
 
         stage.addActor(mainTable);
     }
