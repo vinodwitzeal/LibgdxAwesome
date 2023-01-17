@@ -22,6 +22,10 @@ public class ShapeShader extends ShaderProgram {
         super(Gdx.files.internal("shaders/shapes.vert"), Gdx.files.internal("shaders/shapes.frag"));
     }
 
+    public void setDimension(Vector2 dimension){
+        setUniformf(DIMENSION,dimension);
+    }
+
     public void setRadius(float[] radius) {;
         setUniformf(RADIUS,radius[0],radius[1],radius[2],radius[3]);
     }
