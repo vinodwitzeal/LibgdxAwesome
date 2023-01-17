@@ -56,7 +56,7 @@ void main()
         vec4 fillRadius=outlineRadius-2.0*vec4(u_outline);
         float fillDist=sdRoundBox(point,fillDim,fillRadius);
         if(fillDist>0.0){
-            col=u_outlineColor*v_color;
+            col=mix(vec4(0.0),u_outlineColor, smoothstep(0.0, 1.0, abs(outlineDist)))*v_color;
         }else{
             if(u_fillType==0){
                 col=vec4(0.0);
@@ -75,7 +75,7 @@ void main()
                 }
                 col = mix(u_endColor, u_startColor, smoothstep(0.0, 1.0, distance))*v_color;
             }else{
-                col=u_fillColor*v_color;
+                col=mix(u_fillColor,u_fillColor, smoothstep(0.0, 1.0, abs(fillDist)))*v_color;
             }
         }
     }

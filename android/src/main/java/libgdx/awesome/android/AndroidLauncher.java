@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.unity3d.ads.UnityAds;
+
 import libgdx.awesome.MainController;
 
 /** Launches the Android application. */
