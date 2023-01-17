@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ShapeShader extends ShaderProgram {
     private final String DIMENSION = "u_dimension";
     private final String RADIUS = "u_radius";
+    private final String FILL_COLOR="u_fillColor";
     private final String OUTLINE = "u_outline";
     private final String OUTLINE_COLOR = "u_outlineColor";
     private final String FILL_TYPE="u_fillType";
@@ -27,6 +28,10 @@ public class ShapeShader extends ShaderProgram {
 
     public void setRadius(float topLeft, float topRight, float bottomRight, float bottomLeft) {
         setUniformf(RADIUS, bottomRight,topRight,bottomLeft,topLeft);
+    }
+
+    public void setFillColor(Color color){
+        setUniformf(FILL_COLOR,color);
     }
 
     public void setOutline(float outline) {

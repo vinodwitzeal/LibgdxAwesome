@@ -60,6 +60,11 @@ public class BoxDrawable extends BaseDrawable {
         return this;
     }
 
+    public BoxDrawable fillNone(){
+        this.fillType=FILL_NONE;
+        return this;
+    }
+
     public BoxDrawable fillSolid(Color color){
         this.fillType=FILL_SOLID;
         this.fillColor=color;
@@ -88,15 +93,9 @@ public class BoxDrawable extends BaseDrawable {
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
         dimension.set(width,height);
-        Color batchColor=batch.getColor();
-        if (fillType==FILL_SOLID){
-            tmpColor.set(fillColor).mul(batchColor);
-            batch.setColor(tmpColor);
-        }
         applyShader(batch);
         batch.draw(region,x,y,width,height);
         removeShader(batch);
-        batch.setColor(batchColor);
     }
 
     private void applyShader(Batch batch){
@@ -105,6 +104,7 @@ public class BoxDrawable extends BaseDrawable {
         batch.setShader(shapeShader);
         shapeShader.setDimension(dimension);
         shapeShader.setRadius(topLeft,topRight,bottomRight,bottomLeft);
+        shapeShader.setFillColor(fillColor);
         shapeShader.setOutline(outline);
         shapeShader.setOutlineColor(outlineColor);
         shapeShader.setFillType(fillType);

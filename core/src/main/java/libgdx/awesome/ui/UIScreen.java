@@ -20,7 +20,7 @@ public abstract class UIScreen extends ManagedScreen {
     protected void create() {
         screenWidth=Gdx.graphics.getWidth();
         screenHeight=Gdx.graphics.getHeight();
-        width= 360.0F;
+        width=360.0f;
         height=width*screenHeight/screenWidth;
         FitViewport fitViewport=new FitViewport(width,height);
         stage=new Stage(fitViewport);

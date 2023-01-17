@@ -17,11 +17,14 @@ public class TestScreen extends UIScreen{
     protected void buildUI() {
         BoxDrawable shapeDrawable=new BoxDrawable(new TextureRegion(new Texture("sdf_rect.png")))
 //                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
-                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
-//                .fillSolid(Color.valueOf("FFbb66"))
-                .radius(20);
+//                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
+                .fillSolid(Color.valueOf("FFbb66"))
+//                .fillNone()
+                .outline(4.0f)
+                .outlineColor(Color.valueOf("#FFFFFF"))
+                .radius(150,40,20,150);
         Image image=new Image(shapeDrawable);
-        image.setSize(300,300);
+        image.setSize(360,300);
         image.setPosition((width-image.getWidth())/2f,(height-image.getHeight())/2f);
         stage.addActor(image);
     }
