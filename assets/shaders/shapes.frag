@@ -5,7 +5,7 @@ precision mediump float;
 #define LOWP
 #endif
 
-varying vec4 v_color;
+varying LOWP vec4 v_color;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 
@@ -74,9 +74,9 @@ void main()
         }
 
         if(fillDist>0.0){
-            col=mix(u_outlineColor,vec4(0.0), 1.0-smoothstep(0.0, 1.0, abs(outlineDist)));
+            col=mix(u_outlineColor,vec4(0.0), 1.0-smoothstep(0.0, 0.01, abs(outlineDist)));
         }else{
-            col=mix(fillColor,u_outlineColor, 1.0-smoothstep(0.0, 1.0, abs(fillDist)));
+            col=mix(fillColor,u_outlineColor, 1.0-smoothstep(0.0, 0.01, abs(fillDist)));
         }
     }
     gl_FragColor = col*v_color;

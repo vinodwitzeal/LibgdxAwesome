@@ -16,7 +16,6 @@ public class BoxDrawable extends BaseDrawable {
     private TextureRegion region;
     private ShapeShader shapeShader;
     private ShaderProgram defaultShader;
-    private Vector2 dimension =new Vector2();
     private float radius[]=new float[]{0,0,0,0};
     private float outline=0.0f;
     private Color outlineColor=Color.valueOf("#00000000");
@@ -24,9 +23,14 @@ public class BoxDrawable extends BaseDrawable {
     private Color fillColor=Color.valueOf("#FFFFFF");
     private Color startColor=Color.valueOf("#00000000"),endColor=Color.valueOf("#00000000");
     private final Vector2 radialPosition=new Vector2();
-    private final Vector2 uRadialPosition=new Vector2();
     private float gradientRadius=0.0f;
     private float angle;
+
+    private final Vector2 uDimension=new Vector2();
+    private float uRadius[]=new float[]{0,0,0,0};
+    private float uOutline=0.0f;
+    private final Vector2 uRadialPosition=new Vector2();
+    private float uGradientRadius=0.0f;
     public BoxDrawable(TextureRegion region){
         this.region=region;
         ShaderProgram.pedantic=false;
@@ -95,8 +99,15 @@ public class BoxDrawable extends BaseDrawable {
         this.y=y;
         this.width=width;
         this.height=height;
-        this.dimension.set(width,height);
-        uRadialPosition.set(radialPosition.x,height-radialPosition.y);
+
+        float maxDimension=Math.max(width,height);
+        uDimension.set(width/maxDimension,height/maxDimension);
+        uOutline=outline/maxDimension;
+        for (int i=0;i<4;i++){
+            uRadius[i]=radius[i]/maxDimension;
+        }
+        uRadialPosition.set(radialPosition.x,height-radialPosition.y).scl(1.0f/maxDimension);
+        uGradientRadius=gradientRadius/maxDimension;
     }
 
 
@@ -112,16 +123,16 @@ public class BoxDrawable extends BaseDrawable {
         batch.flush();
         defaultShader=batch.getShader();
         batch.setShader(shapeShader);
-        shapeShader.setDimension(dimension);
-        shapeShader.setRadius(radius);
+        shapeShader.setDimension(uDimension);
+        shapeShader.setRadius(uRadius);
         shapeShader.setFillColor(fillColor);
-        shapeShader.setOutline(outline);
+        shapeShader.setOutline(uOutline);
         shapeShader.setOutlineColor(outlineColor);
         shapeShader.setFillType(fillType);
         shapeShader.setGradient(startColor,endColor);
         shapeShader.setGradientAngle(angle);
         shapeShader.setRadialPosition(uRadialPosition);
-        shapeShader.setGradientRadius(gradientRadius);
+        shapeShader.setGradientRadius(uGradientRadius);
     }
 
     private void removeShader(Batch batch){
