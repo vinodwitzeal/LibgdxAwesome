@@ -1,6 +1,7 @@
 package libgdx.awesome.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import de.eskalon.commons.screen.ManagedScreen;
+import libgdx.awesome.shaders.ShapeShader;
 
 public abstract class UIScreen extends ManagedScreen {
     protected Stage stage;
@@ -24,7 +26,14 @@ public abstract class UIScreen extends ManagedScreen {
         width=screenWidth;
         height=width*screenHeight/screenWidth;
         FitViewport fitViewport=new FitViewport(width,height);
-        stage=new Stage(fitViewport);
+        SpriteBatch spriteBatch=new SpriteBatch();
+        ShaderProgram.pedantic=false;
+        ShaderProgram shader=new ShaderProgram(Gdx.files.internal("shaders/shapes.vert"),Gdx.files.internal("shaders/shapes.frag"));
+        if (!shader.isCompiled()){
+            Gdx.app.error("Shader Error",shader.getLog());
+        }
+        spriteBatch.setShader(shader);
+        stage=new Stage(fitViewport,spriteBatch);
         buildUI();
     }
 

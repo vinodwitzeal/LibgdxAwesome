@@ -11,11 +11,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import libgdx.awesome.shaders.ShapeShader;
 
 public class BoxDrawable extends BaseDrawable {
+    private final String FUNCTION_TYPE="u_functionType";
+    private final String DIMENSION = "u_dimension";
+    private final String RADIUS = "u_radius";
+    private final String FILL_COLOR="u_fillColor";
+    private final String OUTLINE = "u_outline";
+    private final String OUTLINE_COLOR = "u_outlineColor";
+    private final String FILL_TYPE="u_fillType";
+    private final String START_COLOR = "u_startColor";
+    private final String END_COLOR = "u_endColor";
+    private final String ANGLE = "u_angle";
+    private final String RADIAL_POSITION="u_radialPosition";
+    private final String GRADIENT_RADIUS="u_gradientRadius";
+
     public static final int FILL_NONE=0,FILL_SOLID=1,FILL_LINEAR_GRADIENT=2,FILL_RADIAL_GRADIENT=3;
     private float x,y,width,height;
     private TextureRegion region;
-    private ShapeShader shapeShader;
-    private ShaderProgram defaultShader;
     private float radius[]=new float[]{0,0,0,0};
     private float outline=0.0f;
     private Color outlineColor=Color.valueOf("#00000000");
@@ -33,11 +44,6 @@ public class BoxDrawable extends BaseDrawable {
     private float uGradientRadius=0.0f;
     public BoxDrawable(TextureRegion region){
         this.region=region;
-        ShaderProgram.pedantic=false;
-        this.shapeShader=new ShapeShader();
-        if (!this.shapeShader.isCompiled()){
-            Gdx.app.error("Shader Error",this.shapeShader.getLog());
-        }
     }
 
     public BoxDrawable radius(float radius){
@@ -55,7 +61,8 @@ public class BoxDrawable extends BaseDrawable {
 
 
     public BoxDrawable outline(float outline){
-        this.outline=outline;
+        if (outline<1.0f)return this;
+        this.outline=outline+3.0f;
         return this;
     }
 
@@ -121,22 +128,22 @@ public class BoxDrawable extends BaseDrawable {
 
     private void applyShader(Batch batch){
         batch.flush();
-        defaultShader=batch.getShader();
-        batch.setShader(shapeShader);
-        shapeShader.setDimension(uDimension);
-        shapeShader.setRadius(uRadius);
-        shapeShader.setFillColor(fillColor);
-        shapeShader.setOutline(uOutline);
-        shapeShader.setOutlineColor(outlineColor);
-        shapeShader.setFillType(fillType);
-        shapeShader.setGradient(startColor,endColor);
-        shapeShader.setGradientAngle(angle);
-        shapeShader.setRadialPosition(uRadialPosition);
-        shapeShader.setGradientRadius(uGradientRadius);
+        ShaderProgram shader=batch.getShader();
+        shader.setUniformi(FUNCTION_TYPE,2);
+        shader.setUniformf(DIMENSION,uDimension);
+        shader.setUniformf(RADIUS,uRadius[0],uRadius[1],uRadius[2],uRadius[3]);
+        shader.setUniformi(FILL_TYPE,fillType);
+        shader.setUniformf(FILL_COLOR,fillColor);
+        shader.setUniformf(OUTLINE,uOutline);
+        shader.setUniformf(OUTLINE_COLOR,outlineColor);
+        shader.setUniformf(START_COLOR,startColor);
+        shader.setUniformf(END_COLOR,endColor);
+        shader.setUniformf(RADIAL_POSITION,uRadialPosition);
+        shader.setUniformf(GRADIENT_RADIUS,uGradientRadius);
     }
 
     private void removeShader(Batch batch){
         batch.flush();
-        batch.setShader(defaultShader);
+        batch.getShader().setUniformi(FUNCTION_TYPE,0);
     }
 }

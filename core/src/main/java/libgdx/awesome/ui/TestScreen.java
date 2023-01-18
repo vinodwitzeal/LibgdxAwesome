@@ -47,14 +47,14 @@ public class TestScreen extends UIScreen{
 
         BoxDrawable radialDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
 //                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
-                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(400,400),600)
+                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(200,200),600)
 //                .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
-                .outline(4.0f)
-                .outlineColor(Color.valueOf("#FFFFFFBB"))
-                .radius(100);
+//                .outline(0.5f)
+//                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .radius(100,20,100,20);
 
-        mainTable.add(new Image(radialDrawable)).width(800).height(800).padBottom(20);
+        mainTable.add(new Image(radialDrawable)).width(400).height(800).padBottom(20);
 
         stage.addActor(mainTable);
     }

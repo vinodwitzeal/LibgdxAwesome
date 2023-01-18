@@ -9,6 +9,12 @@ varying LOWP vec4 v_color;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 
+const int defaultFunction=0;
+const int fontFunction=1;
+const int drawableFunction=2;
+
+uniform int u_functionType;
+
 uniform vec2 u_dimension;
 uniform vec4 u_radius;
 uniform vec4 u_fillColor;
@@ -39,9 +45,15 @@ float dist(vec2 p0, vec2 pf)
     return sqrt((pf.x - p0.x) * (pf.x - p0.x) + (pf.y - p0.y) * (pf.y - p0.y));
 }
 
+void renderDefault(){
 
-void main()
-{
+}
+
+void renderFont(){
+
+}
+
+void renderDrawable(){
     vec2 point=2.0*v_texCoords*u_dimension-u_dimension;
     float outlineDist=sdRoundBox(point,u_dimension,2.0*u_radius);
     vec4 col;
@@ -74,11 +86,29 @@ void main()
         }
 
         if(fillDist>0.0){
-            col=mix(u_outlineColor,vec4(0.0), 1.0-smoothstep(0.0, 0.01, abs(outlineDist)));
+            col=vec4(u_outlineColor.rgb,smoothstep(0.0, 0.005, abs(outlineDist)));
         }else{
-            col=mix(fillColor,u_outlineColor, 1.0-smoothstep(0.0, 0.01, abs(fillDist)));
+            if(u_outline>0.0){
+                col=mix(u_outlineColor,fillColor,smoothstep(0.0, 0.005, abs(fillDist)));
+            }else{
+                col=vec4(fillColor.rgb,smoothstep(0.0, 0.005, abs(fillDist)));
+            }
         }
     }
     gl_FragColor = col*v_color;
+}
+
+
+void main()
+{
+    if(u_functionType==fontFunction){
+        renderFont();
+    }else if(u_functionType==drawableFunction){
+        renderDrawable();
+    }else{
+        renderDefault();
+    }
+
+
 }
 
