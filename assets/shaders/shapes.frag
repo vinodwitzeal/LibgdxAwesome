@@ -5,13 +5,18 @@ precision mediump float;
 #define LOWP
 #endif
 
-varying LOWP vec4 v_color;
-varying vec2 v_texCoords;
-uniform sampler2D u_texture;
-
 const int defaultFunction=0;
 const int fontFunction=1;
 const int drawableFunction=2;
+
+const int fillNone=0;
+const int fillSolid=1;
+const int fillLinearGradient=2;
+const int fillRadialGradient=3;
+
+varying LOWP vec4 v_color;
+varying vec2 v_texCoords;
+uniform sampler2D u_texture;
 
 uniform int u_functionType;
 
@@ -26,6 +31,18 @@ uniform vec4 u_endColor;
 uniform float u_angle;
 uniform vec2 u_radialPosition;
 uniform float u_gradientRadius;
+
+//Fonts
+uniform float smoothing;
+
+uniform int shadowEnable;
+uniform vec2 shadowOffset;
+uniform vec4 shadowColor;
+uniform float shadowSmoothing;
+
+uniform int outlineEnable;
+uniform float outlineDistance;
+uniform vec4 outlineColor;
 
 float sdRoundBox(in vec2 p, in vec2 b, in vec4 r)
 {
@@ -46,11 +63,31 @@ float dist(vec2 p0, vec2 pf)
 }
 
 void renderDefault(){
-
+    gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
 }
 
 void renderFont(){
+    float distance = texture2D(u_texture, v_texCoords).a;
+    float alpha = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
+    vec4 text = vec4(v_color.rgb, v_color.a * alpha);
+    vec4 resultText=text;
 
+
+    if(outlineEnable>0){
+        float outlineFactor = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
+        vec4 color = mix(outlineColor, v_color, outlineFactor);
+        float alpha = smoothstep(outlineDistance - smoothing, outlineDistance + smoothing, distance);
+        resultText= vec4(color.rgb, color.a * alpha*v_color.a);
+    }
+
+    if(shadowEnable>0){
+        float shadowDistance = texture2D(u_texture, v_texCoords).a;
+        float shadowAlpha = smoothstep(0.5 - shadowSmoothing, 0.5 + shadowSmoothing, shadowDistance);
+        vec4 shadow = vec4(shadowColor.rgb, shadowColor.a*shadowAlpha*v_color.a);
+        resultText = mix(shadow,resultText,resultText.a);
+    }
+
+    gl_FragColor=resultText;
 }
 
 void renderDrawable(){
@@ -65,9 +102,9 @@ void renderDrawable(){
         float fillDist=sdRoundBox(point,fillDim,2.0*fillRadius);
 
         vec4 fillColor;
-        if(u_fillType==0){
+        if(u_fillType==fillNone){
             fillColor=vec4(0.0);
-        }else if(u_fillType==2){
+        }else if(u_fillType==fillLinearGradient){
             vec2 uv =v_texCoords;
             vec2 origin = vec2(0.5, 0.5);
             uv -= origin;
@@ -75,7 +112,7 @@ void renderDrawable(){
             float len = length(uv);
             uv = vec2(cos(angle) * len, sin(angle) * len) + origin;
             fillColor = mix(u_endColor, u_startColor, smoothstep(0.0, 1.0, uv.x));
-        }else if(u_fillType==3){
+        }else if(u_fillType==fillRadialGradient){
             float distance =dist(u_radialPosition,v_texCoords*u_dimension)/u_gradientRadius;
             if(distance>1.0){
                 distance=1.0;
@@ -86,12 +123,12 @@ void renderDrawable(){
         }
 
         if(fillDist>0.0){
-            col=vec4(u_outlineColor.rgb,smoothstep(0.0, 0.005, abs(outlineDist)));
+            col=vec4(u_outlineColor.rgb,outlineColor.a*smoothstep(0.0, 0.005, abs(outlineDist)));
         }else{
             if(u_outline>0.0){
-                col=mix(u_outlineColor,fillColor,smoothstep(0.0, 0.005, abs(fillDist)));
+                col=mix(u_outlineColor,fillColor,smoothstep(0.0, 0.01, abs(fillDist)));
             }else{
-                col=vec4(fillColor.rgb,smoothstep(0.0, 0.005, abs(fillDist)));
+                col=vec4(fillColor.rgb,fillColor.a*smoothstep(0.0, 0.01, abs(fillDist)));
             }
         }
     }

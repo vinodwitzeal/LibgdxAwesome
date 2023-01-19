@@ -24,7 +24,7 @@ public class BoxDrawable extends BaseDrawable {
     private final String RADIAL_POSITION="u_radialPosition";
     private final String GRADIENT_RADIUS="u_gradientRadius";
 
-    public static final int FILL_NONE=0,FILL_SOLID=1,FILL_LINEAR_GRADIENT=2,FILL_RADIAL_GRADIENT=3;
+    private final int FILL_NONE=0,FILL_SOLID=1,FILL_LINEAR_GRADIENT=2,FILL_RADIAL_GRADIENT=3;
     private float x,y,width,height;
     private TextureRegion region;
     private float radius[]=new float[]{0,0,0,0};
@@ -60,13 +60,9 @@ public class BoxDrawable extends BaseDrawable {
 
 
 
-    public BoxDrawable outline(float outline){
+    public BoxDrawable outline(float outline,Color outlineColor){
         if (outline<1.0f)return this;
         this.outline=outline+3.0f;
-        return this;
-    }
-
-    public BoxDrawable outlineColor(Color outlineColor){
         this.outlineColor=outlineColor;
         return this;
     }
@@ -127,7 +123,7 @@ public class BoxDrawable extends BaseDrawable {
     }
 
     private void applyShader(Batch batch){
-        batch.flush();
+//        batch.flush();
         ShaderProgram shader=batch.getShader();
         shader.setUniformi(FUNCTION_TYPE,2);
         shader.setUniformf(DIMENSION,uDimension);
@@ -138,6 +134,7 @@ public class BoxDrawable extends BaseDrawable {
         shader.setUniformf(OUTLINE_COLOR,outlineColor);
         shader.setUniformf(START_COLOR,startColor);
         shader.setUniformf(END_COLOR,endColor);
+        shader.setUniformf(ANGLE,angle);
         shader.setUniformf(RADIAL_POSITION,uRadialPosition);
         shader.setUniformf(GRADIENT_RADIUS,uGradientRadius);
     }

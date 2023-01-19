@@ -28,19 +28,17 @@ public class TestScreen extends UIScreen{
 //                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
                 .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
-                .outline(4.0f)
-                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .outline(4.0f,Color.valueOf("#FFFFFF"))
                 .radius(20,40,20,20);
 
         mainTable.add(new Image(solidDrawable)).width(100).height(100).padBottom(20).row();
 
         BoxDrawable linearDrawable=new BoxDrawable(new TextureRegion(sdfTexture))
-                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),0)
+                .linearGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),90)
 //                .radialGradient(Color.valueOf("#FF1188"), Color.valueOf("#88BBFF"),new Vector2(150,150),150)
 //                .fillSolid(Color.valueOf("FFbb66"))
 //                .fillNone()
-                .outline(20.0f)
-                .outlineColor(Color.valueOf("#FFFFFFBB"))
+                .outline(20.0f,Color.valueOf("#FFFFFF"))
                 .radius(200);
 
         mainTable.add(new Image(linearDrawable)).width(800).height(400).padBottom(20).row();
