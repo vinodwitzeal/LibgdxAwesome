@@ -46,7 +46,7 @@ public abstract class UIScreen extends ManagedScreen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0.5f,0.5f,0.5f,0.5f);
+        ScreenUtils.clear(0.0f,0.0f,0.0f,0.0f);
         stage.act(delta);
         stage.draw();
     }
